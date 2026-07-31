@@ -1,5 +1,7 @@
 # promptforge
 
+[![release](https://github.com/flyingpurplepizzaeater/promptforge/actions/workflows/release.yml/badge.svg)](https://github.com/flyingpurplepizzaeater/promptforge/actions/workflows/release.yml)
+
 **Rough ask in, structured prompt out.** A tiny, offline CLI that turns a vague
 development request into a rigorous, paste-ready prompt for **any** AI/LLM —
 ChatGPT, Claude, Gemini, or a local model. No API keys, no network, one small binary.
