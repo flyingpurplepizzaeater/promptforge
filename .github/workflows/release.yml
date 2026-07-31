@@ -1,0 +1,51 @@
+name: release
+
+# Push a version tag (e.g. `git tag v1.1.0 && git push origin v1.1.0`) to build
+# every platform binary and publish a GitHub Release with them attached.
+# The manual "Run workflow" button (workflow_dispatch) builds the same binaries
+# and uploads them as run artifacts instead — a way to test the build with no release.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false # no third-party deps / go.sum, so nothing to cache
+
+      - name: Build all targets
+        run: bash build.sh
+
+      - name: Generate checksums
+        working-directory: dist
+        run: sha256sum promptforge-* | tee SHA256SUMS.txt
+
+      - name: Publish release (on tag push)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "promptforge $GITHUB_REF_NAME" \
+            --generate-notes
+
+      - name: Upload binaries as artifacts (manual test runs)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: promptforge-binaries
+          path: dist/*
+          if-no-files-found: error

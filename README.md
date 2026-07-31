@@ -92,6 +92,19 @@ Cross-compile every release binary into `dist/`:
 ./build.sh
 ```
 
+## Releases
+
+Releases are built by CI. Push a version tag and GitHub Actions cross-compiles all
+six binaries (plus `SHA256SUMS.txt`) and publishes them to a GitHub Release:
+
+```
+git tag v1.1.0
+git push origin v1.1.0
+```
+
+To test the build without publishing, trigger it manually from the **Actions → release
+→ Run workflow** button — it uploads the binaries as run artifacts instead.
+
 ## Design notes
 
 - **Single file, standard library only.** No third-party dependencies — the binary is
