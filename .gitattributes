@@ -1,0 +1,4 @@
+# Normalize line endings on commit; check out native.
+* text=auto
+# Shell scripts must stay LF or they won't run on macOS/Linux.
+*.sh text eol=lf
